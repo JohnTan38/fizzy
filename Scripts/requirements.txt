@@ -1,6 +1,6 @@
 streamlit
 pandas
 numpy
-#pywin32==305;platform_system=="Windows"
+pywin32==305;platform_system=="Windows"
 polars
 functools
