@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+pywin32
+polars
+functools
