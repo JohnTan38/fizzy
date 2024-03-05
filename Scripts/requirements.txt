@@ -6,4 +6,4 @@ openpyxl
 plotly
 #pywin32==305;platform_system=="Windows"
 polars
-functools
+#functools
