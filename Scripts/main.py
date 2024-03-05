@@ -68,7 +68,7 @@ if City == 'RE':
     #st.title('Formula RE 📊')
     title_main("Formula RE 📊")
 
-    tab1, tab2 = st.tabs(['Formula RE', 'Overview'])
+    tab1, tab2 = st.tabs(['Formula RE', 'Chat with data'])
 
     with tab1:
 
@@ -196,6 +196,7 @@ if City == 'RE':
             merged_df_6 = process_size_values(merged_df_5)
             merged_df_6.rename(columns={'Container No': 'FIS2 RE Units', 'Size/Type':'FIS2', 'dmsInventory_new': 'dmsInventory'}, inplace=True)
             merged_df_6.fillna("-", inplace=True)
+            merged_df_6.drop_duplicates(keep='last', inplace=True)
 
         #col1, col2 = st.columns(2)
 
@@ -353,122 +354,261 @@ if City == 'RE':
 
         #userEmail = st.text_input('Enter your email')
         col1, col2 = st.columns(2)
-        with col1:
+        #with col1:
 
             #userEmail = st.selectbox(
                 #label='Your Email',
                 #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                 #index=None
             #)
-            userEmail = st.text_input('Enter your email', type='default')
-            import re
-            def validate_email(email):
+            #userEmail = st.text_input('Enter your email', type='default')
+            #import re
+            #def validate_email(email):
                 #pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-                pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(\.[a-zA-Z]{2,})?$'
-                if re.match(pattern, email):
-                    return True
-                else:
-                    return False
-            if validate_email(userEmail):
-                userEmail = userEmail
-            else:
-                st.write('Please enter a valid email address')
+                #pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(\.[a-zA-Z]{2,})?$'
+                #if re.match(pattern, email):
+                    #return True
+                #else:
+                    #return False
+            #if validate_email(userEmail):
+                #userEmail = userEmail
+            #else:
+                #st.write('Please enter a valid email address')
 
-        with col2:
+        #with col2:
 
-            cc_lst = st.multiselect(
-                label='CC',
-                options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+            #cc_lst = st.multiselect(
+                #label='CC',
+                #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                 
-                key=str
-            )
+                #key=str
+            #)
 
-        if st.button('Email to users'):
+        #if st.button('Email to users'):
             #userEmail = st.text_input('Enter your email')
-            import win32com.client as win32
-            import sys
-            import pandas as pd
-            import pathlib
-            import glob
-            from datetime import datetime
-            import pythoncom
+            #import win32com.client as win32
+            #import sys
+            #import pandas as pd
+            #import pathlib
+            #import glob
+            #from datetime import datetime
+            #import pythoncom
 
-            outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
-            pythoncom.CoInitialize()
+            #outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
+            #pythoncom.CoInitialize()
             #inbox = outlook.Folders(email).Folders("Inbox")
 
-            def sendmail(receiver, attachments, subject, body, cc_lst):
-                """Sends an Outlook email.
+            #def sendmail(receiver, attachments, subject, body, cc_lst):
+                #"""Sends an Outlook email.
 
-                Args:
-                receiver (str): The email address of the recipient.
-                attachments (list): A list of file paths to attachments.
-                subject (str): The subject of the email.
-                body (str): The body of the email in HTML format.
-                """
+                #Args:
+                #receiver (str): The email address of the recipient.
+                #attachments (list): A list of file paths to attachments.
+                #subject (str): The subject of the email.
+                #body (str): The body of the email in HTML format.
+                #"""
                 #outlook = win32.Dispatch("Outlook.Application")
-                mail = outlook.CreateItem(0)
-                mail.To = receiver
-                mail.Subject = subject
-                mail.HTMLBody = body
-                mail.CC = ";".join(cc_lst)
+                #mail = outlook.CreateItem(0)
+                #mail.To = receiver
+                #mail.Subject = subject
+                #mail.HTMLBody = body
+                #mail.CC = ";".join(cc_lst)
 
                 #for attachment in attachments:
                     #attachment = path_skyHAP+attachment
                     #mail.Attachments.Add(attachment)
-                mail.Send()
+                #mail.Send()
 
-            #receiver = "john.tan@sh-cogent.com.sg"
-            receiver = userEmail
+            
+            #receiver = userEmail
             #attachments = attachments
-            attachments = []
-            files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
-            for file in files_xl:
-                if 'Container_Already_Approved.xlsx' in file.name:
-                    attachments.append(file.name)       
-                if 'Container_Not_Approve.xlsx' in file.name:
-                    attachments.append(file.name)
+            #attachments = []
+            #files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
+            #for file in files_xl:
+                #if 'Container_Already_Approved.xlsx' in file.name:
+                    #attachments.append(file.name)       
+                #if 'Container_Not_Approve.xlsx' in file.name:
+                    #attachments.append(file.name)
         
             #cc = pd.read_excel(path_skyHAP+ r'CC.xlsx', sheet_name='dlpCC', engine='openpyxl')
             #cc_lst = cc['add'].tolist()
             #cc_lst = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
 
-            subject = "Formula RE "+ datetime.now().strftime("%Y%m%d %H:%M")
-            body = """
-                    <html>
-                    <head>
-                    <title>Dear User</title>
-                    </head>
-                    <body>
-                    <p style="color: blue;font-size:25px;">Please note FIS2 RE Units.</strong><br></p>
+            #subject = "Formula RE "+ datetime.now().strftime("%Y%m%d %H:%M")
+            #body = """
+                    #<html>
+                    #<head>
+                    #<title>Dear User</title>
+                    #</head>
+                    #<body>
+                    #<p style="color: blue;font-size:25px;">Please note FIS2 RE Units.</strong><br></p>
 
-                    </body>
-                    </html>
+                    #</body>
+                    #</html>
 
-                    """+ merged_df_6.reset_index(drop=True).to_html() +"""
+                    #"""+ merged_df_6.reset_index(drop=True).to_html() +"""
         
-                    <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+                    #<br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
         
-            sendmail(receiver, attachments, subject, body, cc_lst)
+            #sendmail(receiver, attachments, subject, body, cc_lst)
             #st.success("Email sent successfully")
-            success_email("Email sent successfully 🌈")
-            st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
+            #success_email("Email sent successfully 🌈")
+    st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
 
     with tab2:
         st.write(
-            """Begin by uploading SKY HAP APPROVAL GENERATOR csv file. App automatically recognizes column headers and infer data types.
+            """Begin by uploading SKY HAP APPROVAL GENERATOR (RE) csv file. App automatically recognizes column headers and infer data types.
                Business rules based on specific user requirements are translated to code logic.
                App processes the data and generates clean, organized datatables. 
-               You can view these datatables online, download a copy or conveniently email via Outlook.
+               You can view these datatables online, chat with data or create a visualization.
         """
         )
+
+        st.divider()
+        import sqlite3
+        from sqlite3 import Connection
+        #from openai import OpenAI
+        import openai
+        
+        import plotly.express as px
+        import plotly.graph_objs as go
+        import re
+        from dateutil.parser import parse
+        import traceback
+
+        def create_connection(db_name: str) -> Connection:
+            conn = sqlite3.connect(db_name)
+            return conn
+
+        def run_query(conn: Connection, query: str) -> pd.DataFrame:
+            df = pd.read_sql_query(query, conn)
+            print(df)
+            return df
+
+        def create_table(conn: Connection, df: pd.DataFrame, table_name: str):
+            df.to_sql(table_name, conn, if_exists="replace", index=False)
+
+        def generate_gpt_reponse(gpt_input, max_tokens):
+    
+            #openai_api_key = st.secrets["openai_api_key"]
+            openai.api_key = openai_api_key
+            #client = OpenAI(openai_api_key)
+            completion = openai.ChatCompletion.create(
+                model="gpt-4-turbo-preview",
+                max_tokens=max_tokens,
+                temperature=0,
+                messages=[
+                    {"role": "user", "content": gpt_input},
+                ]
+            )
+
+            gpt_response = completion.choices[0].message['content'].strip()
+            print(gpt_response)
+            return gpt_response
+
+        def extract_code(gpt_response):
+            """function to extract code and sql query from gpt response"""
+
+            if "```" in gpt_response:
+                # extract text between ``` and ```
+                pattern = r'```(.*?)```'
+                code = re.search(pattern, gpt_response, re.DOTALL)
+                extracted_code = code.group(1)
+
+                # remove sql and python from the code (weird bug)
+                for word in ['sql', 'python']:
+                    if extracted_code.lower().startswith(word):
+                        extracted_code = extracted_code[len(word):]
+                        #extracted_code = extracted_code.replace('python', '')
+                print(extracted_code)
+
+                return extracted_code.strip() # strip leading and trailing whitespaces
+            else:
+                return gpt_response
+
+        with st.sidebar:
+            openai_api_key = st.text_input("YOUR_OPENAI_API_KEY", type="password")
+            openai.api_key = openai_api_key
+
+        uploaded_file = st.file_uploader("Upload CSV file", type=['csv']) #merged_df_4.reset_index(drop=True)
+        if uploaded_file is None:
+            st.info(f""" Please upload a csv file""")
+
+        elif uploaded_file:
+            df = pd.read_csv(uploaded_file)
+
+            for col in df.columns:
+            # check if a column name contains date substring
+                if 'date' in col.lower():
+                    df[col] = pd.to_datetime(df[col])
+            df = df.reset_index(drop=True)
+            df.columns = df.columns.str.replace(' ', '_')
+
+            cols = df.columns
+            cols = ", ".join(cols)
+
+            with st.expander("Preview data"):
+                st.table(df.reset_index(drop=True).head())
+
+            conn = create_connection(":memory:")
+            table_name = "my_table"
+            create_table(conn, df, table_name)
+
+            selected_mode = st.selectbox("What do you want to do?", ["Chat with data", "Create a visualization"])
+            if selected_mode == 'Chat with data':
+                user_input = st.text_area("Write a concise and clear question about your data. For example: What is the total sales in the USA in 2022?", value='What is the total sales in the USA in 2022?')
+                if st.button("Get Response"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write a SQLite query based on this question: {} The table name is my_table and the table has the following columns: {}. ' \
+                                    'Return only a SQLite query and nothing else'.format(user_input, cols)
+
+                        query = generate_gpt_reponse(gpt_input, max_tokens=1000)
+                        query_clean = extract_code(query)
+                        result = run_query(conn, query_clean)
+
+                        with st.expander("SQL query used"):
+                            st.code(query_clean)
+                        # if result df has one row and one column
+                        if result.shape == (1, 1):
+                            # get the value of the first row of the first column
+                            val = result.iloc[0, 0]
+                            # write one liner response
+                            st.subheader('Your response: {}'.format(val))
+                        else:
+                            st.subheader("Your result 🌈")
+                            st.table(result)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+                        
+            if selected_mode == 'Create a visualization':
+                user_input = st.text_area(
+                    "Briefly explain what you want to plot from your data. For example: Plot total sales by country and product category", value='Plot total sales by country and product category')
+                if st.button("Create a visualization"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write code in Python using Plotly to address the following request: {} ' \
+                                'Use df that has the following columns: {}. Do not use animation_group argument and return only code with no import statements, use transparent background, the data has been already loaded in a df variable'.format(user_input, cols)
+
+                        gpt_response = generate_gpt_reponse(gpt_input, max_tokens=2000)
+                        extracted_code = extract_code(gpt_response)
+                        extracted_code = extracted_code.replace('fig.show()', 'st.plotly_chart(fig)')
+                        with st.expander("Code used"):
+                            st.code(extracted_code)
+                        # execute code
+                        exec(extracted_code)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+
 
 
 elif City == 'AP':
 
     st.title('Formula AP 📊')
 
-    tab1, tab2 = st.tabs(['Formula AP', 'Overview'])
+    tab1, tab2 = st.tabs(['Formula AP', 'Chat with data'])
 
     with tab1:
 
@@ -645,6 +785,7 @@ elif City == 'AP':
             formulaAP_final = process_size_values(formulaAP_1) #7
             formulaAP_final.rename(columns={'Container No': 'FIS2 AP Units', 'RepairCompleted_y': 'RepairCompleted'}, inplace=True)
             formulaAP_final.fillna("-", inplace=True)
+            formulaAP_final.drop_duplicates(keep='last', inplace=True)
 
             st.divider()
 
@@ -666,8 +807,8 @@ elif City == 'AP':
             #userEmail = st.text_input('Enter your email')
             col1, col2 = st.columns(2)
 
-            userEmail = st.text_input('Enter your email', type='default')
-            import re
+            #userEmail = st.text_input('Enter your email', type='default')
+            #import re
             def validate_email(email):
                 #pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
                 pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(\.[a-zA-Z]{2,})?$'
@@ -675,10 +816,10 @@ elif City == 'AP':
                     return True
                 else:
                     return False
-            if validate_email(userEmail):
-                userEmail = userEmail
-            else:
-                st.write('Please enter a valid email address')
+            #if validate_email(userEmail):
+                #userEmail = userEmail
+            #else:
+                #st.write('Please enter a valid email address')
             
             #with col1:
 
@@ -687,100 +828,231 @@ elif City == 'AP':
                     #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                     #index=None
                 #)
-            with col2:
+            #with col2:
 
-                cc_lst = st.multiselect(
-                    label='CC',
-                    options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+                #cc_lst = st.multiselect(
+                    #label='CC',
+                    #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                 
-                    key=str
-                )
+                    #key=str
+                #)
 
-            if st.button('Email to users'):
+            #if st.button('Email to users'):
                 #userEmail = st.text_input('Enter your email')
-                import win32com.client as win32
-                import sys
-                import pandas as pd
-                import pathlib
-                import glob
-                from datetime import datetime
-                import pythoncom
+                #import win32com.client as win32
+                #import sys
+                #import pandas as pd
+                #import pathlib
+                #import glob
+                #from datetime import datetime
+                #import pythoncom
 
-                outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
-                pythoncom.CoInitialize()
+                #outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
+                #pythoncom.CoInitialize()
                 #inbox = outlook.Folders(email).Folders("Inbox")
 
-                def sendmail(receiver, attachments, subject, body, cc_lst):
-                    """Sends an Outlook email.
-
-                    Args:
-                    receiver (str): The email address of the recipient.
-                    attachments (list): A list of file paths to attachments.
-                    subject (str): The subject of the email.
-                    body (str): The body of the email in HTML format.
-                    """
+                #def sendmail(receiver, attachments, subject, body, cc_lst):
+                    
                     #outlook = win32.Dispatch("Outlook.Application")
-                    mail = outlook.CreateItem(0)
-                    mail.To = receiver
-                    mail.Subject = subject
-                    mail.HTMLBody = body
-                    mail.CC = ";".join(cc_lst)
+                    #mail = outlook.CreateItem(0)
+                    #mail.To = receiver
+                    #mail.Subject = subject
+                    #mail.HTMLBody = body
+                    #mail.CC = ";".join(cc_lst)
 
                     #for attachment in attachments:
                         #attachment = path_skyHAP+attachment
                         #mail.Attachments.Add(attachment)
-                    mail.Send()
+                    #mail.Send()
 
-                #receiver = "john.tan@sh-cogent.com.sg"
-                receiver = userEmail
+                #receiver = userEmail
                 #attachments = attachments
-                attachments = []
-                files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
-                for file in files_xl:
-                    if 'Container_Already_Approved.xlsx' in file.name:
-                        attachments.append(file.name)       
-                    if 'Container_Not_Approve.xlsx' in file.name:
-                        attachments.append(file.name)
+                #attachments = []
+                #files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
+                #for file in files_xl:
+                    #if 'Container_Already_Approved.xlsx' in file.name:
+                        #attachments.append(file.name)       
+                    #if 'Container_Not_Approve.xlsx' in file.name:
+                        #attachments.append(file.name)
         
                 #cc = pd.read_excel(path_skyHAP+ r'CC.xlsx', sheet_name='dlpCC', engine='openpyxl')
                 #cc_lst = cc['add'].tolist()
-                cc_lst = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
+                #cc_lst = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
 
-                subject = "Formula AP "+ datetime.now().strftime("%Y%m%d %H:%M")
-                body = """
-                        <html>
-                        <head>
-                        <title>Dear User</title>
-                        </head>
-                        <body>
-                        <p style="color: blue;font-size:25px;">Please note FIS2 AP Units.</strong><br></p>
+                #subject = "Formula AP "+ datetime.now().strftime("%Y%m%d %H:%M")
+                #body = """
+                        #<html>
+                        #<head>
+                        #<title>Dear User</title>
+                        #</head>
+                        #<body>
+                        #<p style="color: blue;font-size:25px;">Please note FIS2 AP Units.</strong><br></p>
 
-                        </body>
-                        </html>
+                        #</body>
+                        #</html>
 
-                        """+ formulaAP_final.reset_index(drop=True).to_html() +"""
+                        #"""+ formulaAP_final.reset_index(drop=True).to_html() +"""
         
-                        <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+                        #<br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
         
-                sendmail(receiver, attachments, subject, body, cc_lst)
+                #sendmail(receiver, attachments, subject, body, cc_lst)
                 #st.success("Email sent successfully")
-                success_email("Email sent successfully 🌈")
-                st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
+                #success_email("Email sent successfully 🌈")
+    st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
 
     with tab2:
         st.write(
-            """Begin by uploading SKY HAP APPROVAL GENERATOR csv file. App automatically recognizes column headers and infer data types.
+            """Begin by uploading SKY HAP APPROVAL GENERATOR (AP) csv file. App automatically recognizes column headers and infer data types.
                Business rules based on specific user requirements are translated to code logic.
                App processes the data and generates clean, organized datatables. 
-               You can view these datatables online, download a copy or conveniently email via Outlook.
+               You can view these datatables online, chat with data or create a visualization.
         """
         )
+        st.divider()
+
+        import sqlite3
+        from sqlite3 import Connection
+        #from openai import OpenAI
+        import openai
+        
+        import plotly.express as px
+        import plotly.graph_objs as go
+        import re
+        from dateutil.parser import parse
+        import traceback
+
+        def create_connection(db_name: str) -> Connection:
+            conn = sqlite3.connect(db_name)
+            return conn
+
+        def run_query(conn: Connection, query: str) -> pd.DataFrame:
+            df = pd.read_sql_query(query, conn)
+            print(df)
+            return df
+
+        def create_table(conn: Connection, df: pd.DataFrame, table_name: str):
+            df.to_sql(table_name, conn, if_exists="replace", index=False)
+
+        def generate_gpt_reponse(gpt_input, max_tokens):
+    
+            #openai_api_key = st.secrets["openai_api_key"]
+            openai.api_key = openai_api_key
+            #client = OpenAI(openai_api_key)
+            completion = openai.ChatCompletion.create(
+                model="gpt-4-turbo-preview",
+                max_tokens=max_tokens,
+                temperature=0,
+                messages=[
+                    {"role": "user", "content": gpt_input},
+                ]
+            )
+
+            gpt_response = completion.choices[0].message['content'].strip()
+            print(gpt_response)
+            return gpt_response
+
+        def extract_code(gpt_response):
+            """function to extract code and sql query from gpt response"""
+
+            if "```" in gpt_response:
+                # extract text between ``` and ```
+                pattern = r'```(.*?)```'
+                code = re.search(pattern, gpt_response, re.DOTALL)
+                extracted_code = code.group(1)
+
+                # remove sql and python from the code (weird bug)
+                for word in ['sql', 'python']:
+                    if extracted_code.lower().startswith(word):
+                        extracted_code = extracted_code[len(word):]
+                        #extracted_code = extracted_code.replace('python', '')
+                print(extracted_code)
+
+                return extracted_code.strip() # strip leading and trailing whitespaces
+            else:
+                return gpt_response
+
+        with st.sidebar:
+            openai_api_key = st.text_input("YOUR_OPENAI_API_KEY", type="password")
+            openai.api_key = openai_api_key
+
+        uploaded_file = st.file_uploader("Upload CSV file", type=['csv']) #merged_df_4.reset_index(drop=True)
+        if uploaded_file is None:
+            st.info(f""" Please upload a csv file""")
+
+        elif uploaded_file:
+            df = pd.read_csv(uploaded_file)
+
+            for col in df.columns:
+            # check if a column name contains date substring
+                if 'date' in col.lower():
+                    df[col] = pd.to_datetime(df[col])
+            df = df.reset_index(drop=True)
+            df.columns = df.columns.str.replace(' ', '_')
+
+            cols = df.columns
+            cols = ", ".join(cols)
+
+            with st.expander("Preview data"):
+                st.table(df.reset_index(drop=True).head())
+
+            conn = create_connection(":memory:")
+            table_name = "my_table"
+            create_table(conn, df, table_name)
+
+            selected_mode = st.selectbox("What do you want to do?", ["Chat with data", "Create a visualization"])
+            if selected_mode == 'Chat with data':
+                user_input = st.text_area("Write a concise and clear question about your data. For example: What is the total sales in the USA in 2022?", value='What is the total sales in the USA in 2022?')
+                if st.button("Get Response"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write a SQLite query based on this question: {} The table name is my_table and the table has the following columns: {}. ' \
+                                    'Return only a SQLite query and nothing else'.format(user_input, cols)
+
+                        query = generate_gpt_reponse(gpt_input, max_tokens=1000)
+                        query_clean = extract_code(query)
+                        result = run_query(conn, query_clean)
+
+                        with st.expander("SQL query used"):
+                            st.code(query_clean)
+                        # if result df has one row and one column
+                        if result.shape == (1, 1):
+                            # get the value of the first row of the first column
+                            val = result.iloc[0, 0]
+                            # write one liner response
+                            st.subheader('Your response: {}'.format(val))
+                        else:
+                            st.subheader("Your result 🌈")
+                            st.table(result)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+                        
+            if selected_mode == 'Create a visualization':
+                user_input = st.text_area(
+                    "Briefly explain what you want to plot from your data. For example: Plot total sales by country and product category", value='Plot total sales by country and product category')
+                if st.button("Create a visualization"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write code in Python using Plotly to address the following request: {} ' \
+                                'Use df that has the following columns: {}. Do not use animation_group argument and return only code with no import statements, use transparent background, the data has been already loaded in a df variable'.format(user_input, cols)
+
+                        gpt_response = generate_gpt_reponse(gpt_input, max_tokens=2000)
+                        extracted_code = extract_code(gpt_response)
+                        extracted_code = extracted_code.replace('fig.show()', 'st.plotly_chart(fig)')
+                        with st.expander("Code used"):
+                            st.code(extracted_code)
+                        # execute code
+                        exec(extracted_code)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+
 
 elif City == 'PE':
 
     st.title('Formula PE 📊')
 
-    tab1, tab2 = st.tabs(['Formula PE', 'Overview'])
+    tab1, tab2 = st.tabs(['Formula PE', 'Chat with data'])
 
     with tab1:
 
@@ -976,6 +1248,8 @@ elif City == 'PE':
             merged_df_4 = process_size_values(merged_df_3) #8
             merged_df_4.rename(columns={'Container No': 'FIS2 PE Units', 'Size/Type': 'FIS2 PE Size', 'dmsInventory_y': 'dmsInventory', 'repairCompleted_1': 'RepairCompleted'}, 
                                inplace=True)
+            merged_df_4.drop_duplicates(keep='last', inplace=True)
+            
             
             st.divider()
 
@@ -990,9 +1264,9 @@ elif City == 'PE':
             st.divider()
 
             #userEmail = st.text_input('Enter your email')
-            col1, col2 = st.columns(2)
-            userEmail = st.text_input('Enter your email', type='default')
-            import re
+            #col1, col2 = st.columns(2)
+            #userEmail = st.text_input('Enter your email', type='default')
+            #import re
             def validate_email(email):
                 #pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
                 pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(\.[a-zA-Z]{2,})?$'
@@ -1000,10 +1274,10 @@ elif City == 'PE':
                     return True
                 else:
                     return False
-            if validate_email(userEmail):
-                userEmail = userEmail
-            else:
-                st.write('Please enter a valid email address')
+            #if validate_email(userEmail):
+                #userEmail = userEmail
+            #else:
+                #st.write('Please enter a valid email address')
 
             #with col1:
 
@@ -1012,98 +1286,225 @@ elif City == 'PE':
                     #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                     #index=None
                 #)
-            with col2:
+            #with col2:
 
-                cc_lst = st.multiselect(
-                    label='CC',
-                    options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+                #cc_lst = st.multiselect(
+                    #label='CC',
+                    #options=['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
                 
-                    key=str
-                )
+                    #key=str
+                #)
 
-            if st.button("Send Email to users"):
-                import win32com.client as win32
-                import sys
-                import pandas as pd
-                import pathlib
-                import glob
-                from datetime import datetime
-                import pythoncom
+            #if st.button("Send Email to users"):
+                #import win32com.client as win32
+                #import sys
+                #import pandas as pd
+                #import pathlib
+                #import glob
+                #from datetime import datetime
+                #import pythoncom
 
-                outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
+                #outlook = win32.Dispatch("Outlook.Application", pythoncom.CoInitialize())#.GetNamespace("MAPI")
                 #inbox = outlook.Folders(email).Folders("Inbox")
-                pythoncom.CoInitialize
+                #pythoncom.CoInitialize
 
-                def sendmail(receiver, attachments, subject, body, cc_lst):
-                    """Sends an Outlook email.
-
-                    Args:
-                    receiver (str): The email address of the recipient.
-                    attachments (list): A list of file paths to attachments.
-                    subject (str): The subject of the email.
-                    body (str): The body of the email in HTML format.
-                    """
+                #def sendmail(receiver, attachments, subject, body, cc_lst):
+                    
                     #outlook = win32.Dispatch("Outlook.Application")
-                    mail = outlook.CreateItem(0)
-                    mail.To = receiver
-                    mail.Subject = subject
-                    mail.HTMLBody = body
-                    mail.CC = ";".join(cc_lst)
+                    #mail = outlook.CreateItem(0)
+                    #mail.To = receiver
+                    #mail.Subject = subject
+                    #mail.HTMLBody = body
+                    #mail.CC = ";".join(cc_lst)
 
                     #for attachment in attachments:
                         #attachment = path_skyHAP+attachment
                         #mail.Attachments.Add(attachment)
-                    mail.Send()
+                    #mail.Send()
 
-                #receiver = "john.tan@sh-cogent.com.sg"
-                receiver = userEmail
+                #receiver = userEmail
                 #attachments = attachments
-                attachments = []
-                files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
-                for file in files_xl:
-                    if 'Container_Already_Approved.xlsx' in file.name:
-                        attachments.append(file.name)       
-                    if 'Container_Not_Approve.xlsx' in file.name:
-                        attachments.append(file.name)
+                #attachments = []
+                #files_xl = [f for f in pathlib.Path().iterdir() if f.is_file()] #files_xl = glob.glob(path_dms+'*.xlsx')
+                #for file in files_xl:
+                    #if 'Container_Already_Approved.xlsx' in file.name:
+                        #attachments.append(file.name)       
+                    #if 'Container_Not_Approve.xlsx' in file.name:
+                        #attachments.append(file.name)
         
                 #cc = pd.read_excel(path_skyHAP+ r'CC.xlsx', sheet_name='dlpCC', engine='openpyxl')
                 #cc_lst = cc['add'].tolist()
-                cc_lst = ['john.tan@sh-cogent.com.sg']#, 'abu.zaar@sh-cogent.com.sg']
+                #cc_lst = ['john.tan@sh-cogent.com.sg']#, 'abu.zaar@sh-cogent.com.sg']
 
-                subject = "Formula PE "+ datetime.now().strftime("%Y%m%d %H:%M")
-                body = """
-                        <html>
-                        <head>
-                        <title>Dear User</title>
-                        </head>
-                        <body>
-                        <p style="color: blue;font-size:25px;">Please note FIS2 PE Units.</strong><br></p>
+                #subject = "Formula PE "+ datetime.now().strftime("%Y%m%d %H:%M")
+                #body = """
+                        #<html>
+                        #<head>
+                        #<title>Dear User</title>
+                        #</head>
+                        #<body>
+                        #<p style="color: blue;font-size:25px;">Please note FIS2 PE Units.</strong><br></p>
 
-                        </body>
-                        </html>
+                        #</body>
+                        #</html>
 
-                        """+ merged_df_4.reset_index(drop=True).to_html() +"""
+                        #"""+ merged_df_4.reset_index(drop=True).to_html() +"""
         
-                        <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+                        #<br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
         
-                sendmail(receiver, attachments, subject, body, cc_lst)
+                #sendmail(receiver, attachments, subject, body, cc_lst)
                 #st.success("Email sent successfully")
-                success_email("Email sent successfully 🌈")
-                st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
+                #success_email("Email sent successfully 🌈")
+    st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
                 
 
     with tab2:
 
         st.write(
-            """Begin by uploading SKY HAP APPROVAL GENERATOR csv file. App automatically recognizes column headers and infer data types.
+            """Begin by uploading SKY HAP APPROVAL GENERATOR (PE) csv file. App automatically recognizes column headers and infer data types.
                Business rules based on specific user requirements are translated to code logic.
                App processes the data and generates clean, organized datatables. 
-               You can view these datatables online, download a copy or conveniently email via Outlook.
+               You can view these datatables online, chat with data or create a visualization.
 
         """
         )
 
         st.divider()
-        #st.write(":red[_Click the button to view the dataset_]")
-        #st.link_button(
-            #"Dataset", "https://www.kaggle.com/datasets/kunwarakash/chennai-housing-sales-price")
+        import sqlite3
+        from sqlite3 import Connection
+        #from openai import OpenAI
+        import openai
+        
+        import plotly.express as px
+        import plotly.graph_objs as go
+        import re
+        from dateutil.parser import parse
+        import traceback
+
+        def create_connection(db_name: str) -> Connection:
+            conn = sqlite3.connect(db_name)
+            return conn
+
+        def run_query(conn: Connection, query: str) -> pd.DataFrame:
+            df = pd.read_sql_query(query, conn)
+            print(df)
+            return df
+
+        def create_table(conn: Connection, df: pd.DataFrame, table_name: str):
+            df.to_sql(table_name, conn, if_exists="replace", index=False)
+
+        def generate_gpt_reponse(gpt_input, max_tokens):
+    
+            #openai_api_key = st.secrets["openai_api_key"]
+            openai.api_key = openai_api_key
+            #client = OpenAI(openai_api_key)
+            completion = openai.ChatCompletion.create(
+                model="gpt-4-turbo-preview",
+                max_tokens=max_tokens,
+                temperature=0,
+                messages=[
+                    {"role": "user", "content": gpt_input},
+                ]
+            )
+
+            gpt_response = completion.choices[0].message['content'].strip()
+            print(gpt_response)
+            return gpt_response
+
+        def extract_code(gpt_response):
+            """function to extract code and sql query from gpt response"""
+
+            if "```" in gpt_response:
+                # extract text between ``` and ```
+                pattern = r'```(.*?)```'
+                code = re.search(pattern, gpt_response, re.DOTALL)
+                extracted_code = code.group(1)
+
+                # remove sql and python from the code (weird bug)
+                for word in ['sql', 'python']:
+                    if extracted_code.lower().startswith(word):
+                        extracted_code = extracted_code[len(word):]
+                        #extracted_code = extracted_code.replace('python', '')
+                print(extracted_code)
+
+                return extracted_code.strip() # strip leading and trailing whitespaces
+            else:
+                return gpt_response
+
+        with st.sidebar:
+            openai_api_key = st.text_input("YOUR_OPENAI_API_KEY", type="password")
+            openai.api_key = openai_api_key
+
+        uploaded_file = st.file_uploader("Upload CSV file", type=['csv']) #merged_df_4.reset_index(drop=True)
+        if uploaded_file is None:
+            st.info(f""" Please upload a csv file""")
+
+        elif uploaded_file:
+            df = pd.read_csv(uploaded_file)
+
+            for col in df.columns:
+            # check if a column name contains date substring
+                if 'date' in col.lower():
+                    df[col] = pd.to_datetime(df[col])
+            df = df.reset_index(drop=True)
+            df.columns = df.columns.str.replace(' ', '_')
+
+            cols = df.columns
+            cols = ", ".join(cols)
+
+            with st.expander("Preview data"):
+                st.table(df.head())
+
+            conn = create_connection(":memory:")
+            table_name = "my_table"
+            create_table(conn, df, table_name)
+
+            selected_mode = st.selectbox("What do you want to do?", ["Chat with data", "Create a visualization"])
+            if selected_mode == 'Chat with data':
+                user_input = st.text_area("Write a concise and clear question about your data. For example: What is the total sales in the USA in 2022?", value='What is the total sales in the USA in 2022?')
+                if st.button("Get Response"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write a SQLite query based on this question: {} The table name is my_table and the table has the following columns: {}. ' \
+                                    'Return only a SQLite query and nothing else'.format(user_input, cols)
+
+                        query = generate_gpt_reponse(gpt_input, max_tokens=1000)
+                        query_clean = extract_code(query)
+                        result = run_query(conn, query_clean)
+
+                        with st.expander("SQL query used"):
+                            st.code(query_clean)
+                        # if result df has one row and one column
+                        if result.shape == (1, 1):
+                            # get the value of the first row of the first column
+                            val = result.iloc[0, 0]
+                            # write one liner response
+                            st.subheader('Your response: {}'.format(val))
+                        else:
+                            st.subheader("Your result 🌈")
+                            st.table(result)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+                        
+            if selected_mode == 'Create a visualization':
+                user_input = st.text_area(
+                    "Briefly explain what you want to plot from your data. For example: Plot total sales by country and product category", value='Plot total sales by country and product category')
+                if st.button("Create a visualization"):
+                    try:
+                        # create gpt prompt
+                        gpt_input = 'Write code in Python using Plotly to address the following request: {} ' \
+                                'Use df that has the following columns: {}. Do not use animation_group argument and return only code with no import statements, use transparent background, the data has been already loaded in a df variable'.format(user_input, cols)
+
+                        gpt_response = generate_gpt_reponse(gpt_input, max_tokens=2000)
+                        extracted_code = extract_code(gpt_response)
+                        extracted_code = extracted_code.replace('fig.show()', 'st.plotly_chart(fig)')
+                        with st.expander("Code used"):
+                            st.code(extracted_code)
+                        # execute code
+                        exec(extracted_code)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+
+
