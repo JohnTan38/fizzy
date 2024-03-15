@@ -76,7 +76,7 @@ if City == 'RE':
         if uploaded_file is None:
             st.write("Please upload a file")
         elif uploaded_file:
-            list_ws = ['INVENTORY_DETAILS', 'REPAIR_ESTIMATE', 'CONTAINER_MOVEMENT_OUT', 'AP', 'RE', 'PE']
+            list_ws = ['DMS INVENTORY', 'REPAIR ESTIMATE', 'MOVEMENT OUT', 'AP', 'RE', 'PE']
             cols_dmsInventory = ['Container No.', 'Customer', 'Size/Type', 'Current Status']
             cols_repairEstimate = ['Container No', 'Customer', 'EOR Status', 'Surveyor Name', 'Total'] #HAPAG LLOYD (S) PTE LTD
             cols_movementOut = ['Container No.', 'Customer', 'Status']
