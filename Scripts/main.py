@@ -3,6 +3,7 @@ import pandas as pd
 import polars as pl
 import numpy as np
 from functools import reduce
+import pathlib
 
 st.set_page_config('FIS2', page_icon="🏰", layout='wide')
 def title(url):
@@ -348,7 +349,7 @@ if City == 'RE':
                 merged_df_6 = merged_df_6.astype(str)
                 st.dataframe(merged_df_6, use_container_width=True)
                 st.success("Dataframe is ready 💸")
-                #st.write("## The Price of the House is : 💸", price)
+                
 
         st.divider()
 
