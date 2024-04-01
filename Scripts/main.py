@@ -696,7 +696,11 @@ elif City == 'AP':
                 return df
 
             # Apply the function #3
-            repairCompleted_df = add_repair_completed_column(ap_repair)
+            try:
+                 repairCompleted_df = add_repair_completed_column(ap_repair)
+            except Exception as e:
+                 repairCompleted_df = ap_repair
+                 st.write(e)
 
             #4
             repairCompleted_movement = pd.merge(repairCompleted_df, ap_movement, on='Container No', how='left') #4
