@@ -767,9 +767,11 @@ elif City == 'AP':
                     processed_df['RepairCompleted'] = processed_df.apply(lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
                     axis=1)
                 except Exception as e:
-                    st.write(e)     
-                return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
-
+                    st.write(e)
+                try:     
+                    return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
+                except:
+                     pass
             formulaAP_repair = process_repair_completed(formulaAP) #6
 
             formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
