@@ -689,7 +689,10 @@ elif City == 'AP':
                     pd.DataFrame: DataFrame with additional 'RepairCompleted' column.
                 """
                 # Apply the conditions
-                df['RepairCompleted'] = df.apply(lambda row: '-' if row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
+                try:
+                     df['RepairCompleted'] = df.apply(lambda row: '-' if row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
+                except Exception as e:
+                     st.write(e)
                 return df
 
             # Apply the function #3
