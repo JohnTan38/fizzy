@@ -794,11 +794,16 @@ elif City == 'AP':
                     '45G1': '45GP',
                     '22G1': '22GP'
                 }, inplace=True)
-
-                return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
+                try:
+                     return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
                             'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
-                return processed_df[['Container No', 'Size', 'dmsInventory', 'MovementOut', 'Amount', 
-                            'EOR Status']] 
+                except:
+                     pass
+                try:
+                     return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted', 'MovementOut', 'Amount', 
+                            'EOR Status', 'Surveyor Name']]
+                except:
+                     pass
 
             formulaAP_final = process_size_values(formulaAP) #7
             formulaAP_final.rename(columns={'Container No': 'FIS2 AP Units', 'RepairCompleted_y': 'RepairCompleted'}, inplace=True)
