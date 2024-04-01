@@ -769,7 +769,7 @@ elif City == 'AP':
                     axis=1
                 )
                 except Exception as e:
-                st.write(e)     
+                    st.write(e)     
                 return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
 
             formulaAP_repair = process_repair_completed(formulaAP) #6
