@@ -678,7 +678,7 @@ elif City == 'AP':
             ap_movement.rename(columns={'Container No.':'Container No'}, inplace=True)
 
             #3
-            #def add_repair_completed_column(df):
+            def add_repair_completed_column(df):
                 #"""
                 #Adds a new column 'RepairCompleted' to the DataFrame based on conditions:
                 #1. If 'EOR Status' == 'Pending Repair', set 'RepairCompleted' to an empty string.
@@ -689,20 +689,20 @@ elif City == 'AP':
                     #pd.DataFrame: DataFrame with additional 'RepairCompleted' column.
                 #"""
                 # Apply the conditions
-                #try:
-                     #df['RepairCompleted'] = df.apply(lambda row: '-' if row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
+                try:
+                     df['RepairCompleted'] = df.apply(lambda row: '-' if pd.notna(row['EOR Status']) and row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
                      #df.fillna(0)
-                     #return df
-                #except Exception as e:
-                     #st.write(e)
-                #return df
+                     return df
+                except Exception as e:
+                     st.write(e)
+                return df
 
             # Apply the function #3
-            #try:
-                 #repairCompleted_df = add_repair_completed_column(ap_repair)
-            #except Exception as e:
-                 #repairCompleted_df = ap_repair
-            repairCompleted_df = ap_repair     
+            try:
+                 repairCompleted_df = add_repair_completed_column(ap_repair)
+            except Exception as e:
+                 repairCompleted_df = ap_repair
+            #repairCompleted_df = ap_repair     
             #4
             repairCompleted_movement = pd.merge(repairCompleted_df, ap_movement, on='Container No', how='left') #4
             def replace_nan_with_dash(df, column_name):
