@@ -797,6 +797,8 @@ elif City == 'AP':
 
                 return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
                             'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
+                return processed_df[['Container No', 'Size', 'dmsInventory', 'MovementOut', 'Amount', 
+                            'EOR Status']] 
 
             formulaAP_final = process_size_values(formulaAP_1) #7
             formulaAP_final.rename(columns={'Container No': 'FIS2 AP Units', 'RepairCompleted_y': 'RepairCompleted'}, inplace=True)
