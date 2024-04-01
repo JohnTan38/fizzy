@@ -795,8 +795,8 @@ elif City == 'AP':
                     '22G1': '22GP'
                 }, inplace=True)
 
-                return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
-                            'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
+                #return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
+                            #'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
                 return processed_df[['Container No', 'Size', 'dmsInventory', 'MovementOut', 'Amount', 
                             'EOR Status']] 
 
