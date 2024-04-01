@@ -773,9 +773,11 @@ elif City == 'AP':
                 except:
                      pass
             formulaAP_repair = process_repair_completed(formulaAP) #6
-
-            formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
-
+            try:
+                 
+                formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
+            except:
+                 formulaAP_1 = formulaAP
             #7
             def process_size_values(df):                
                 processed_df = df.copy() # Create a copy of the original DataFrame
@@ -1068,7 +1070,7 @@ elif City == 'PE':
         if uploaded_file is None:
             st.write("Please upload a file")
         elif uploaded_file:
-            list_ws = ['INVENTORY_DETAILS', 'REPAIR_ESTIMATE', 'CONTAINER_MOVEMENT_OUT', 'AP', 'RE', 'PE']
+            list_ws = ['DMS INVENTORY', 'REPAIR ESTIMATE', 'MOVEMENT OUT', 'AP', 'RE', 'PE']
             cols_dmsInventory = ['Container No.', 'Customer', 'Size/Type', 'Current Status']
             cols_repairEstimate = ['Container No', 'Customer', 'EOR Status', 'Surveyor Name', 'Total'] #HAPAG LLOYD (S) PTE LTD
             cols_movementOut = ['Container No.', 'Customer', 'Status']
