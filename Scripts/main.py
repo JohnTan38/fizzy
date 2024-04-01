@@ -762,10 +762,14 @@ elif City == 'AP':
                 processed_df = df.copy() # Create a copy of the original DataFrame
 
                 # Replace values in the 'RepairCompleted' column
-                processed_df['RepairCompleted'] = processed_df.apply(
+                try:
+                     
+                    processed_df['RepairCompleted'] = processed_df.apply(
                     lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
                     axis=1
                 )
+                except Exception as e:
+                st.write(e)     
                 return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
 
             formulaAP_repair = process_repair_completed(formulaAP) #6
