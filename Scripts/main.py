@@ -764,10 +764,8 @@ elif City == 'AP':
                 # Replace values in the 'RepairCompleted' column
                 try:
                      
-                    processed_df['RepairCompleted'] = processed_df.apply(
-                    lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
-                    axis=1
-                )
+                    processed_df['RepairCompleted'] = processed_df.apply(lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
+                    axis=1)
                 except Exception as e:
                     st.write(e)     
                 return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
