@@ -800,7 +800,7 @@ elif City == 'AP':
                 return processed_df[['Container No', 'Size', 'dmsInventory', 'MovementOut', 'Amount', 
                             'EOR Status']] 
 
-            formulaAP_final = process_size_values(formulaAP_1) #7
+            formulaAP_final = process_size_values(formulaAP) #7
             formulaAP_final.rename(columns={'Container No': 'FIS2 AP Units', 'RepairCompleted_y': 'RepairCompleted'}, inplace=True)
             formulaAP_final.fillna("-", inplace=True)
             formulaAP_final.drop_duplicates(keep='last', inplace=True)
