@@ -691,9 +691,10 @@ elif City == 'AP':
                 # Apply the conditions
                 try:
                      df['RepairCompleted'] = df.apply(lambda row: '-' if row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
+                     return df
                 except Exception as e:
                      st.write(e)
-                return df
+                #return df
 
             # Apply the function #3
             try:
