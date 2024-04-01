@@ -757,33 +757,33 @@ elif City == 'AP':
             formulaAP.rename(columns={'Total': 'Amount', 'Size/Type': 'Size'}, inplace=True)
 
             #6
-            #def process_repair_completed(df):
+            def process_repair_completed(df):
                 #"""
                 #Process the 'RepairCompleted' column in the given DataFrame.
                 #- Replace 'Pending Customer' and 'Complete' with corresponding value from 'Surveyor Name' column.('MD GLOBAL').
                 #- Keep '-' unchanged.
                 #Returns a new DataFrame with only 'Container No' and 'RepairCompleted' columns.
                 #"""
-                #processed_df = df.copy() # Create a copy of the original DataFrame
+                processed_df = df.copy() # Create a copy of the original DataFrame
 
                 # Replace values in the 'RepairCompleted' column
-                #try:
+                try:
                      
-                    #processed_df['RepairCompleted'] = processed_df.apply(lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
-                    #axis=1)
-                #except Exception as e:
-                    #st.write(e)
-                #try:     
-                    #return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
-                #except:
-                     #pass
-            #formulaAP_repair = process_repair_completed(formulaAP) #6
-            #try:
+                    processed_df['RepairCompleted'] = processed_df.apply(lambda row: row['Surveyor Name'] if pd.notna(row['Surveyor Name']) and row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
+                    axis=1)
+                except Exception as e:
+                    st.write(e)
+                try:     
+                    return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
+                except:
+                     pass
+            formulaAP_repair = process_repair_completed(formulaAP) #6
+            try:
                  
-                #formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
-            #except:
-                 #formulaAP_1 = formulaAP
-            formulaAP_1 = formulaAP 
+                formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
+            except:
+                 formulaAP_1 = formulaAP
+            #formulaAP_1 = formulaAP 
             #7
             def process_size_values(df):                
                 processed_df = df.copy() # Create a copy of the original DataFrame
@@ -795,8 +795,8 @@ elif City == 'AP':
                     '22G1': '22GP'
                 }, inplace=True)
 
-                #return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
-                            #'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
+                return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
+                            'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
                 return processed_df[['Container No', 'Size', 'dmsInventory', 'MovementOut', 'Amount', 
                             'EOR Status']] 
 
