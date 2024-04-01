@@ -783,7 +783,7 @@ elif City == 'AP':
                 #formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
             #except:
                  #formulaAP_1 = formulaAP
-            formulaAP_1 - formulaAP 
+            formulaAP_1 = formulaAP 
             #7
             def process_size_values(df):                
                 processed_df = df.copy() # Create a copy of the original DataFrame
