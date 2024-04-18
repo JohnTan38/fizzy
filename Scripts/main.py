@@ -454,8 +454,35 @@ if City == 'RE':
             #sendmail(receiver, attachments, subject, body, cc_lst)
             #st.success("Email sent successfully")
             #success_email("Email sent successfully 🌈")
-    st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
+    #st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
 
+    #footer
+    footer_html = """
+    <div class="footer">
+    <style>
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f0f2f6;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .footer a {
+            color: #4a4a4a;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #3d3d3d;
+            text-decoration: underline;
+        }
+    </style>
+        All rights reserved @2024. Cogent Holdings IT Solutions.      
+    </div>
+"""
+st.markdown(footer_html,unsafe_allow_html=True)
+     
     with tab2:
         st.write(
             """Begin by uploading SKY HAP APPROVAL GENERATOR (RE) csv file. App automatically recognizes column headers and infer data types.
