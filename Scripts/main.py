@@ -480,8 +480,8 @@ if City == 'RE':
     </style>
         All rights reserved @2024. Cogent Holdings IT Solutions.      
     </div>
-"""
-st.markdown(footer_html,unsafe_allow_html=True)
+    """
+    st.markdown(footer_html,unsafe_allow_html=True)
      
     with tab2:
         st.write(
