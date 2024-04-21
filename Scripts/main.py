@@ -3,7 +3,6 @@ import pandas as pd
 import polars as pl
 import numpy as np
 from functools import reduce
-import pathlib
 
 st.set_page_config('FIS2', page_icon="🏰", layout='wide')
 def title(url):
@@ -77,7 +76,7 @@ if City == 'RE':
         if uploaded_file is None:
             st.write("Please upload a file")
         elif uploaded_file:
-            list_ws = ['DMS INVENTORY', 'REPAIR ESTIMATE', 'MOVEMENT OUT', 'AP', 'RE', 'PE']
+            list_ws = ['INVENTORY_DETAILS', 'REPAIR_ESTIMATE', 'CONTAINER_MOVEMENT_OUT', 'AP', 'RE', 'PE']
             cols_dmsInventory = ['Container No.', 'Customer', 'Size/Type', 'Current Status']
             cols_repairEstimate = ['Container No', 'Customer', 'EOR Status', 'Surveyor Name', 'Total'] #HAPAG LLOYD (S) PTE LTD
             cols_movementOut = ['Container No.', 'Customer', 'Status']
@@ -85,16 +84,16 @@ if City == 'RE':
             cols_re = ['Container', 'Source']
             cols_pe = ['Container', 'Source']
 
-            polar_dmsInventory = pl.read_excel(uploaded_file, sheet_name=list_ws[0], raise_if_empty=True, engine='openpyxl')
+            polar_dmsInventory = pl.read_excel(uploaded_file, sheet_name='DMS INVENTORY', raise_if_empty=True, engine='openpyxl')
             dmsInventory = polar_dmsInventory.to_pandas(use_pyarrow_extension_array=True)
-            polar_repairEstimate = pl.read_excel(uploaded_file, sheet_name=list_ws[1], raise_if_empty=True, 
+            polar_repairEstimate = pl.read_excel(uploaded_file, sheet_name='REPAIR ESTIMATE', raise_if_empty=True, 
                                                       read_options={'infer_schema_length':int(1e10)}, engine='openpyxl')                                               
             repairEstimate = polar_repairEstimate.to_pandas(use_pyarrow_extension_array=True)
-            movementOut = pd.read_excel(uploaded_file, sheet_name=list_ws[2], engine='openpyxl')
+            movementOut = pd.read_excel(uploaded_file, sheet_name='MOVEMENT OUT', engine='openpyxl')
             #movementOut = polar_movementOut.to_pandas(use_pyarrow_extension_array=True)
-            ap = pd.read_excel(uploaded_file, sheet_name=list_ws[3], dtype=str, engine='openpyxl')
-            re = pd.read_excel(uploaded_file, sheet_name=list_ws[4], dtype=str, engine='openpyxl')
-            pe = pd.read_excel(uploaded_file, sheet_name=list_ws[5], dtype=str, engine='openpyxl')
+            ap = pd.read_excel(uploaded_file, sheet_name='AP', dtype=str, engine='openpyxl')
+            re = pd.read_excel(uploaded_file, sheet_name='RE', dtype=str, engine='openpyxl')
+            pe = pd.read_excel(uploaded_file, sheet_name='PE', dtype=str, engine='openpyxl')
 
             dmsInventory = dmsInventory[cols_dmsInventory]
             repairEstimate = repairEstimate[cols_repairEstimate]
@@ -104,7 +103,7 @@ if City == 'RE':
             pe = pe[cols_pe]
 
             mask_inventory = (dmsInventory['Customer'].isin(['HAP'])) #2
-            mask_repairEstimate_0 = (repairEstimate['Customer'].isin(['HAPAG LLOYD (S) PTE LTD']))
+            mask_repairEstimate_0 = (repairEstimate['Customer'].isin(['HAP', 'HAPAG LLOYD (S) PTE LTD']))
             mask_repairEstimate_1 = (repairEstimate['Surveyor Name'].isin(['MD GLOBAL', 'Eastern Repairer', 'Abu Zaar Amiruddin Bin Jasri', ' ']))
             mask_movementOut = (movementOut['Customer'].isin(['HAP']))
             assert mask_inventory.any()
@@ -349,9 +348,69 @@ if City == 'RE':
                 merged_df_6 = merged_df_6.astype(str)
                 st.dataframe(merged_df_6, use_container_width=True)
                 st.success("Dataframe is ready 💸")
-                
+                #st.write("## The Price of the House is : 💸", price)
 
         st.divider()
+        email_receiver = st.text_input('To email recipient')
+        if st.button('Send email'):
+            import smtplib, email, ssl
+            from email import encoders
+            from email.mime.base import MIMEBase
+            from email.mime.multipart import MIMEMultipart
+            from email.mime.text import MIMEText
+            import glob, re, os
+            from datetime import datetime
+            email_sender = 'john.tan@sh-cogent.com.sg'
+
+            body = """
+                <html>
+                <head>
+                <title>Dear User</title>
+                </head>
+                <body>
+                <p style="color: blue;font-size:25px;">DMS Inventory updated.</strong><br></p>
+
+                </body>
+                </html>
+
+                """+ merged_df_6.reset_index(drop=True).to_html() +"""
+        
+                <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+            
+            password = st.secrets["password"]
+            mailserver = smtplib.SMTP('smtp.office365.com',587)
+            mailserver.ehlo()
+            mailserver.starttls()
+            mailserver.login(email_sender, password)
+
+            try:
+                if email_receiver is not None:
+                    try:
+                        rgx = r'^([^@]+)@[^@]+$'
+                        matchObj = re.search(rgx, email_receiver)
+                        if not matchObj is None:
+                            usr = matchObj.group(1)
+                    except:
+                        pass
+
+                msg = MIMEMultipart()
+                msg['From'] = email_sender
+                msg['To'] = email_receiver
+                msg['Subject'] = 'DMS Inventory Status ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
+                msg.attach(MIMEText(body, 'html'))
+                text = msg.as_string()
+
+                with smtplib.SMTP("smtp.office365.com", 587) as server:
+                    server.ehlo()
+                    server.starttls()
+                    server.login(email_sender, password)
+                    server.sendmail(email_sender, email_receiver, text)
+                    server.quit()
+
+                st.success("Email sent successfully 💌 🚀")
+            
+            except Exception as e:
+                st.error(f"Email not sent: {e}")
 
         #userEmail = st.text_input('Enter your email')
         col1, col2 = st.columns(2)
@@ -454,35 +513,8 @@ if City == 'RE':
             #sendmail(receiver, attachments, subject, body, cc_lst)
             #st.success("Email sent successfully")
             #success_email("Email sent successfully 🌈")
-    #st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="color:#190303;font-size:16px;"><br><br><br><br><br><br><br>{"All Rights Reserved 2024 Cogent Holdings IT"}</h1>', unsafe_allow_html=True)
 
-    #footer
-    footer_html = """
-    <div class="footer">
-    <style>
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #f0f2f6;
-            padding: 10px 20px;
-            text-align: center;
-        }
-        .footer a {
-            color: #4a4a4a;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            color: #3d3d3d;
-            text-decoration: underline;
-        }
-    </style>
-        All rights reserved @2024. Cogent Holdings IT Solutions.      
-    </div>
-    """
-    st.markdown(footer_html,unsafe_allow_html=True)
-     
     with tab2:
         st.write(
             """Begin by uploading SKY HAP APPROVAL GENERATOR (RE) csv file. App automatically recognizes column headers and infer data types.
@@ -652,11 +684,13 @@ elif City == 'AP':
             cols_re = ['Container', 'Source']
             cols_pe = ['Container', 'Source']
 
-            polar_dmsInventory = pl.read_excel(uploaded_file, sheet_name=list_ws[0], raise_if_empty=True, engine='openpyxl')
-            dmsInventory = polar_dmsInventory.to_pandas(use_pyarrow_extension_array=True)
-            polar_repairEstimate = pl.read_excel(uploaded_file, sheet_name=list_ws[1], raise_if_empty=True, 
-                                                      read_options={'infer_schema_length':int(1e10)}, engine='openpyxl')                                               
-            repairEstimate = polar_repairEstimate.to_pandas(use_pyarrow_extension_array=True)
+            #polar_dmsInventory = pl.read_excel(uploaded_file, sheet_name=list_ws[0], raise_if_empty=True, engine='openpyxl')
+            #dmsInventory = polar_dmsInventory.to_pandas(use_pyarrow_extension_array=True)
+            dmsInventory = pd.read_excel(uploaded_file, sheet_name='DMS INVENTORY', engine='openpyxl')
+            #polar_repairEstimate = pl.read_excel(uploaded_file, sheet_name=list_ws[1], raise_if_empty=True, 
+                                                      #read_options={'infer_schema_length':int(1e10)}, engine='openpyxl')                                               
+            #repairEstimate = polar_repairEstimate.to_pandas(use_pyarrow_extension_array=True)
+            repairEstimate = pd.read_excel(uploaded_file, sheet_name='REPAIR ESTIMATE', engine='openpyxl')
             movementOut = pd.read_excel(uploaded_file, sheet_name=list_ws[2], engine='openpyxl')
             #movementOut = polar_movementOut.to_pandas(use_pyarrow_extension_array=True)
             ap = pd.read_excel(uploaded_file, sheet_name=list_ws[3], dtype=str, engine='openpyxl')
@@ -671,7 +705,7 @@ elif City == 'AP':
             pe = pe[cols_pe]
 
             mask_inventory = (dmsInventory['Customer'].isin(['HAP'])) #2
-            mask_repairEstimate = (repairEstimate['Customer'].isin(['HAPAG LLOYD (S) PTE LTD']))
+            mask_repairEstimate = (repairEstimate['Customer'].isin(['HAP', 'HAPAG LLOYD (S) PTE LTD']))
             #mask_repairEstimate_1 = (repairEstimate['Surveyor Name'].isin(['MD GLOBAL', 'Eastern Repairer', 'Abu Zaar Amiruddin Bin Jasri', ' ']))
             mask_movementOut = (movementOut['Customer'].isin(['HAP']))
             assert mask_inventory.any()
@@ -689,16 +723,16 @@ elif City == 'AP':
             lst_ap = remove_whitespace_from_list(ap['Container'].tolist())
             lst_re = remove_whitespace_from_list(re['Container'].tolist())
             lst_pe = remove_whitespace_from_list(pe['Container'].tolist())
-
+            
             mask_ap_inventory = (dmsInventory_hap['Container No.'].isin(lst_ap)) #select rows based on list values
             ap_inventory = dmsInventory_hap[mask_ap_inventory]
             ap_inventory = ap_inventory.sort_values(by='Container No.', ascending=True)
-
+            
             mask_ap_repair = (repairEstimate_hap['Container No'].isin(lst_ap))
             ap_repair = repairEstimate_hap[mask_ap_repair]
             ap_repair = ap_repair.sort_values(by='Container No', ascending=True)
             ap_repair.drop_duplicates(subset=['Container No'], keep='first', inplace=True)
-
+            
             mask_ap_movement = (movementOut_hap['Container No.'].isin(lst_ap))
             ap_movement = movementOut_hap[mask_ap_movement]
             ap_movement = ap_movement.sort_values(by='Container No.', ascending=True)
@@ -706,32 +740,26 @@ elif City == 'AP':
 
             #3
             def add_repair_completed_column(df):
-                #"""
-                #Adds a new column 'RepairCompleted' to the DataFrame based on conditions:
-                #1. If 'EOR Status' == 'Pending Repair', set 'RepairCompleted' to an empty string.
-                #2. Otherwise, set 'RepairCompleted' to the value of 'EOR Status'.
-                #Args:
-                    #df (pd.DataFrame): Input DataFrame with columns 'Container' and 'EOR Status'.
-                #Returns:
-                    #pd.DataFrame: DataFrame with additional 'RepairCompleted' column.
-                #"""
+                """
+                Adds a new column 'RepairCompleted' to the DataFrame based on conditions:
+                1. If 'EOR Status' == 'Pending Repair', set 'RepairCompleted' to an empty string.
+                2. Otherwise, set 'RepairCompleted' to the value of 'EOR Status'.
+                Args:
+                    df (pd.DataFrame): Input DataFrame with columns 'Container' and 'EOR Status'.
+                Returns:
+                    pd.DataFrame: DataFrame with additional 'RepairCompleted' column.
+                """
                 # Apply the conditions
-                try:
-                     df['RepairCompleted'] = df.apply(lambda row: '-' if pd.notna(row['EOR Status']) and row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
-                     #df.fillna(0)
-                     return df
-                except Exception as e:
-                     st.write(e)
+                df['RepairCompleted'] = df.apply(lambda row: '-' if row['EOR Status'] == 'Pending Repair' else row['EOR Status'], axis=1)
                 return df
 
             # Apply the function #3
-            try:
-                 repairCompleted_df = add_repair_completed_column(ap_repair)
-            except Exception as e:
-                 repairCompleted_df = ap_repair
-            #repairCompleted_df = ap_repair     
+            repairCompleted_df = add_repair_completed_column(repairEstimate_hap)#ap_repair
+            
             #4
-            repairCompleted_movement = pd.merge(repairCompleted_df, ap_movement, on='Container No', how='left') #4
+            movementOut_hap.rename(columns={'Container No.': 'Container No'}, inplace=True)
+            repairCompleted_movement = pd.merge(repairCompleted_df, movementOut_hap, on='Container No', how='left') #
+            
             def replace_nan_with_dash(df, column_name):
                 
                 df[column_name].fillna('-', inplace=True)
@@ -779,38 +807,31 @@ elif City == 'AP':
             ap_inventory_not_in_depot = pd.concat([ap_inventory, not_in_depot_df])
             ap_inventory_not_in_depot.sort_values(by='Container No', ascending=True)
 
-            formulaAP = pd.merge(formulaAP_0, ap_inventory_not_in_depot, on='Container No', how='left')
+            formulaAP = pd.merge(formulaAP_0, ap_inventory_not_in_depot, on='Container No', how='left')#left
             formulaAP.drop(columns=['Customer_x', 'Customer_y', 'Status'], inplace=True)
             formulaAP.rename(columns={'Total': 'Amount', 'Size/Type': 'Size'}, inplace=True)
-
+            
             #6
             def process_repair_completed(df):
-                #"""
-                #Process the 'RepairCompleted' column in the given DataFrame.
-                #- Replace 'Pending Customer' and 'Complete' with corresponding value from 'Surveyor Name' column.('MD GLOBAL').
-                #- Keep '-' unchanged.
-                #Returns a new DataFrame with only 'Container No' and 'RepairCompleted' columns.
-                #"""
+                """
+                Process the 'RepairCompleted' column in the given DataFrame.
+                - Replace 'Pending Customer' and 'Complete' with corresponding value from 'Surveyor Name' column.('MD GLOBAL').
+                - Keep '-' unchanged.
+                Returns a new DataFrame with only 'Container No' and 'RepairCompleted' columns.
+                """
                 processed_df = df.copy() # Create a copy of the original DataFrame
 
                 # Replace values in the 'RepairCompleted' column
-                try:
-                     
-                    processed_df['RepairCompleted'] = processed_df.apply(lambda row: row['Surveyor Name'] if pd.notna(row['Surveyor Name']) and row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
-                    axis=1)
-                except Exception as e:
-                    st.write(e)
-                try:     
-                    return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
-                except:
-                     pass
+                processed_df['RepairCompleted'] = processed_df.apply(
+                    lambda row: row['Surveyor Name'] if row['RepairCompleted'] in ['Pending Customer', 'Complete'] else row['RepairCompleted'],
+                    axis=1
+                )
+                return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
+
             formulaAP_repair = process_repair_completed(formulaAP) #6
-            try:
-                 
-                formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
-            except:
-                 formulaAP_1 = formulaAP
-            #formulaAP_1 = formulaAP 
+            
+            formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
+            
             #7
             def process_size_values(df):                
                 processed_df = df.copy() # Create a copy of the original DataFrame
@@ -821,18 +842,11 @@ elif City == 'AP':
                     '45G1': '45GP',
                     '22G1': '22GP'
                 }, inplace=True)
-                try:
-                     return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
-                            'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
-                except:
-                     pass
-                try:
-                     return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted', 'MovementOut', 'Amount', 
-                            'EOR Status', 'Surveyor Name']]
-                except:
-                     pass
 
-            formulaAP_final = process_size_values(formulaAP) #7
+                return processed_df[['Container No', 'Size', 'dmsInventory', 'RepairCompleted_y', 'MovementOut', 'Amount', 
+                            'EOR Status', 'Surveyor Name']] # Return a DataFrame with only relevant columns
+
+            formulaAP_final = process_size_values(formulaAP_1) #7
             formulaAP_final.rename(columns={'Container No': 'FIS2 AP Units', 'RepairCompleted_y': 'RepairCompleted'}, inplace=True)
             formulaAP_final.fillna("-", inplace=True)
             formulaAP_final.drop_duplicates(keep='last', inplace=True)
@@ -853,6 +867,65 @@ elif City == 'AP':
                     #st.write("## The Price of the House is : 💸", price)
 
             st.divider()
+            email_receiver = st.text_input('To email recipient')
+            if st.button('Send email'):
+                import smtplib, email, ssl
+                from email import encoders
+                from email.mime.base import MIMEBase
+                from email.mime.multipart import MIMEMultipart
+                from email.mime.text import MIMEText
+                import glob, re, os
+                from datetime import datetime
+                email_sender = 'john.tan@sh-cogent.com.sg'
+
+                body = """
+                    <html>
+                    <head>
+                    <title>Dear User</title>
+                    </head>
+                    <body>
+                    <p style="color: blue;font-size:25px;">DMS Inventory updated.</strong><br></p>
+
+                    </body>
+                    </html>
+
+                    """+ formulaAP_final.reset_index(drop=True).to_html() +"""
+        
+                    <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+                
+                password = st.secrets["password"]
+                mailserver = smtplib.SMTP('smtp.office365.com',587)
+                mailserver.ehlo()
+                mailserver.starttls()
+                mailserver.login(email_sender, password)
+
+                try:
+                    if email_receiver is not None:
+                        try:
+                            rgx = r'^([^@]+)@[^@]+$'
+                            matchObj = re.search(rgx, email_receiver)
+                            if not matchObj is None:
+                                usr = matchObj.group(1)
+                        except:
+                            pass
+
+                    msg = MIMEMultipart()
+                    msg['From'] = email_sender
+                    msg['To'] = email_receiver
+                    msg['Subject'] = 'DMS Inventory Status AP ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
+                    msg.attach(MIMEText(body, 'html'))
+                    text = msg.as_string()
+
+                    with smtplib.SMTP("smtp.office365.com", 587) as server:
+                        server.ehlo()
+                        server.starttls()
+                        server.login(email_sender, password)
+                        server.sendmail(email_sender, email_receiver, text)
+                        server.quit()
+                    st.success("Email sent successfully 💌 🚀")
+
+                except Exception as e:
+                    st.error(f"Email not sent: {e}")
 
             #userEmail = st.text_input('Enter your email')
             col1, col2 = st.columns(2)
@@ -1137,7 +1210,7 @@ elif City == 'PE':
             pe = pe[cols_pe]
 
             mask_inventory = (dmsInventory['Customer'].isin(['HAP'])) #2
-            mask_repairEstimate_0 = (repairEstimate['Customer'].isin(['HAPAG LLOYD (S) PTE LTD']))
+            mask_repairEstimate_0 = (repairEstimate['Customer'].isin(['HAP', 'HAPAG LLOYD (S) PTE LTD']))
             mask_repairEstimate_1 = (repairEstimate['Surveyor Name'].isin(['MD GLOBAL', 'Pearlie Loh Mei Wah']))
             mask_movementOut = (movementOut['Customer'].isin(['HAP']))
             assert mask_inventory.any()
@@ -1312,6 +1385,67 @@ elif City == 'PE':
                     st.success("Dataframe is ready 💸")
                     
             st.divider()
+            email_receiver = st.text_input('To email recipient')
+            if st.button('Send email'):
+                
+                import smtplib, email, ssl
+                from email import encoders
+                from email.mime.base import MIMEBase
+                from email.mime.multipart import MIMEMultipart
+                from email.mime.text import MIMEText
+                import glob, re, os
+                from datetime import datetime
+                email_sender = 'john.tan@sh-cogent.com.sg'
+
+                body = """
+                    <html>
+                    <head>
+                    <title>Dear User</title>
+                    </head>
+                    <body>
+                    <p style="color: blue;font-size:25px;">DMS Inventory updated.</strong><br></p>
+
+                    </body>
+                    </html>
+
+                    """+ merged_df_4.reset_index(drop=True).to_html() +"""
+        
+                <br>This message is computer generated. """+ datetime.now().strftime("%Y%m%d %H:%M:%S")
+
+                password = st.secrets["password"]
+                mailserver = smtplib.SMTP('smtp.office365.com',587)
+                mailserver.ehlo()
+                mailserver.starttls()
+                mailserver.login(email_sender, password)
+
+                try:
+                    if email_receiver is not None:
+                        try:
+                            rgx = r'^([^@]+)@[^@]+$'
+                            matchObj = re.search(rgx, email_receiver)
+                            if not matchObj is None:
+                                usr = matchObj.group(1)
+                        except:
+                            pass
+
+                    msg = MIMEMultipart()
+                    msg['From'] = email_sender
+                    msg['To'] = email_receiver
+                    msg['Subject'] = 'DMS Inventory Status PE ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
+                    msg.attach(MIMEText(body, 'html'))
+                    text = msg.as_string()
+
+                    with smtplib.SMTP("smtp.office365.com", 587) as server:
+                        server.ehlo()
+                        server.starttls()
+                        server.login(email_sender, password)
+                        server.sendmail(email_sender, email_receiver, text)
+                        server.quit()
+                    st.success("Email sent successfully 💌 🚀")
+                    success_email("Email sent successfully 🌈")
+
+                except Exception as e:
+                    st.error(f"Email not sent: {e}")
 
             #userEmail = st.text_input('Enter your email')
             #col1, col2 = st.columns(2)
