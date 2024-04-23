@@ -727,17 +727,17 @@ elif City == 'AP':
             mask_ap_inventory = (dmsInventory_hap['Container No.'].isin(lst_ap)) #select rows based on list values
             ap_inventory = dmsInventory_hap[mask_ap_inventory]
             ap_inventory = ap_inventory.sort_values(by='Container No.', ascending=True)
-            
+                        
             mask_ap_repair = (repairEstimate_hap['Container No'].isin(lst_ap))
             ap_repair = repairEstimate_hap[mask_ap_repair]
             ap_repair = ap_repair.sort_values(by='Container No', ascending=True)
             ap_repair.drop_duplicates(subset=['Container No'], keep='first', inplace=True)
-            
+                        
             mask_ap_movement = (movementOut_hap['Container No.'].isin(lst_ap))
             ap_movement = movementOut_hap[mask_ap_movement]
             ap_movement = ap_movement.sort_values(by='Container No.', ascending=True)
             ap_movement.rename(columns={'Container No.':'Container No'}, inplace=True)
-
+            
             #3
             def add_repair_completed_column(df):
                 """
@@ -754,12 +754,12 @@ elif City == 'AP':
                 return df
 
             # Apply the function #3
-            repairCompleted_df = add_repair_completed_column(repairEstimate_hap)#ap_repair
-            
+            repairCompleted_df = add_repair_completed_column(ap_repair)#ap_repair
+                        
             #4
             movementOut_hap.rename(columns={'Container No.': 'Container No'}, inplace=True)
-            repairCompleted_movement = pd.merge(repairCompleted_df, movementOut_hap, on='Container No', how='left') #
-            
+            repairCompleted_movement = pd.merge(repairCompleted_df, movementOut_hap, on='Container No', how='inner') #
+                        
             def replace_nan_with_dash(df, column_name):
                 
                 df[column_name].fillna('-', inplace=True)
@@ -781,7 +781,6 @@ elif City == 'AP':
                 return df
 
             formulaAP_0 = add_movement_out_column(repairCompleted_movement)
-            #formulaAP_0
             ap_inventory.rename(columns={'Container No.': 'Container No', 'Current Status': 'dmsInventory'}, inplace=True)
             ap_inventory.drop(columns=['Customer'], inplace=True)
 
@@ -803,14 +802,14 @@ elif City == 'AP':
                 return res_df
 
             not_in_depot_df = add_dms_inventory_column(ap_movement, ap_inventory) #5
-
+            
             ap_inventory_not_in_depot = pd.concat([ap_inventory, not_in_depot_df])
             ap_inventory_not_in_depot.sort_values(by='Container No', ascending=True)
 
             formulaAP = pd.merge(formulaAP_0, ap_inventory_not_in_depot, on='Container No', how='left')#left
             formulaAP.drop(columns=['Customer_x', 'Customer_y', 'Status'], inplace=True)
             formulaAP.rename(columns={'Total': 'Amount', 'Size/Type': 'Size'}, inplace=True)
-            
+                        
             #6
             def process_repair_completed(df):
                 """
@@ -829,7 +828,6 @@ elif City == 'AP':
                 return processed_df[['Container No', 'RepairCompleted']] # Return a DataFrame with only relevant columns
 
             formulaAP_repair = process_repair_completed(formulaAP) #6
-            
             formulaAP_1 = pd.merge(formulaAP, formulaAP_repair, on='Container No', how='left').drop(columns=['RepairCompleted_x'])
             
             #7
