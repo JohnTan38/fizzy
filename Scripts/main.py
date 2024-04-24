@@ -1436,12 +1436,14 @@ elif City == 'PE':
                     msg['Subject'] = 'DMS Inventory Status PE ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
                     msg.attach(MIMEText(body, 'html'))
                     text = msg.as_string()
+                    cc = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
+                    msg['Cc'] = ", ".join(cc)
 
                     with smtplib.SMTP("smtp.office365.com", 587) as server:
                         server.ehlo()
                         server.starttls()
                         server.login(email_sender, password)
-                        server.sendmail(email_sender, email_receiver, text)
+                        server.sendmail(email_sender, [email_receiver]+cc, text)
                         server.quit()
                     st.success("Email sent successfully 💌 🚀")
                     success_email("Email sent successfully 🌈")
