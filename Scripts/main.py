@@ -352,6 +352,10 @@ if City == 'RE':
 
         st.divider()
         email_receiver = st.text_input('To email recipient')
+        options_email = st.multiselect(
+            ':blue[Select multiple recipients]',
+            ['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+        )
         if st.button('Send email'):
             import smtplib, email, ssl
             from email import encoders
@@ -398,9 +402,9 @@ if City == 'RE':
                 msg['To'] = email_receiver
                 msg['Subject'] = 'DMS Inventory Status ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
                 msg.attach(MIMEText(body, 'html'))
-                text = msg.as_string()
-                cc = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
+                cc = options_email
                 msg['Cc'] = ", ".join(cc)
+                text = msg.as_string()
 
                 with smtplib.SMTP("smtp.office365.com", 587) as server:
                     server.ehlo()
@@ -864,10 +868,14 @@ elif City == 'AP':
                     formulaAP_final = formulaAP_final.astype(str)
                     st.dataframe(formulaAP_final, use_container_width=True)
                     st.success("Dataframe is ready 💸")
-                    #st.write("## The Price of the House is : 💸", price)
+                    
 
             st.divider()
             email_receiver = st.text_input('To email recipient')
+            options_email = st.multiselect(
+                    ':blue[Select email recipients]',
+                    ['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+                )
             if st.button('Send email'):
                 import smtplib, email, ssl
                 from email import encoders
@@ -915,7 +923,7 @@ elif City == 'AP':
                     msg['Subject'] = 'DMS Inventory Status AP ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
                     msg.attach(MIMEText(body, 'html'))
                     text = msg.as_string()
-                    cc = ["abu.zaar@sh-cogent.com.sg"] #add cc recipients
+                    cc = options_email
                     msg['Cc'] = ", ".join(cc)
 
                     with smtplib.SMTP("smtp.office365.com", 587) as server:
@@ -1388,6 +1396,10 @@ elif City == 'PE':
                     
             st.divider()
             email_receiver = st.text_input('To email recipient')
+            options_email = st.multiselect(
+                ':blue[Select multiple recipients]',
+                ['abu.zaar@sh-cogent.com.sg', 'gopi.jaganathan@sh-cogent.com.sg', 'grace.lim@sh-cogent.com.sg', 'john.tan@sh-cogent.com.sg'],
+            )
             if st.button('Send email'):
                 
                 import smtplib, email, ssl
@@ -1435,9 +1447,9 @@ elif City == 'PE':
                     msg['To'] = email_receiver
                     msg['Subject'] = 'DMS Inventory Status PE ' +datetime.today().strftime("%Y%m%d %H:%M:%S")
                     msg.attach(MIMEText(body, 'html'))
-                    text = msg.as_string()
-                    cc = ['john.tan@sh-cogent.com.sg', 'abu.zaar@sh-cogent.com.sg']
+                    cc = options_email
                     msg['Cc'] = ", ".join(cc)
+                    text = msg.as_string()
 
                     with smtplib.SMTP("smtp.office365.com", 587) as server:
                         server.ehlo()
